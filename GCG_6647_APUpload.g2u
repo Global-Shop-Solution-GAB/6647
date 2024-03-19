@@ -1,0 +1,982 @@
+﻿Program.Sub.ScreenSU.Start
+Gui.frmUpload..Create(BaseForm)
+Gui.frmUpload..Caption("Upload")
+Gui.frmUpload..Size(423,187)
+Gui.frmUpload..MinX(0)
+Gui.frmUpload..MinY(0)
+Gui.frmUpload..Position(0,0)
+Gui.frmUpload..AlwaysOnTop(False)
+Gui.frmUpload..FontName("Tahoma")
+Gui.frmUpload..FontSize(8.25)
+Gui.frmUpload..ControlBox(True)
+Gui.frmUpload..MaxButton(False)
+Gui.frmUpload..MinButton(False)
+Gui.frmUpload..MousePointer(0)
+Gui.frmUpload..Moveable(True)
+Gui.frmUpload..Sizeable(True)
+Gui.frmUpload..ShowInTaskBar(True)
+Gui.frmUpload..TitleBar(True)
+Gui.frmUpload..Event(UnLoad,frmUpload_UnLoad)
+Gui.frmUpload.lbl1.Create(Label,"Post Date :",True,63,16,0,15,24,True,0,"Tahoma",7.8,,0,0)
+Gui.frmUpload.lbl1.BorderStyle(0)
+Gui.frmUpload.lbl2.Create(Label,"Vendor :",False,50,16,0,324,60,True,0,"Tahoma",7.8,,0,0)
+Gui.frmUpload.lbl2.BorderStyle(0)
+Gui.frmUpload.cmdUpload.Create(Button)
+Gui.frmUpload.cmdUpload.Enabled(True)
+Gui.frmUpload.cmdUpload.Visible(True)
+Gui.frmUpload.cmdUpload.Zorder(0)
+Gui.frmUpload.cmdUpload.Size(94,29)
+Gui.frmUpload.cmdUpload.Position(19,99)
+Gui.frmUpload.cmdUpload.Caption("Upload")
+Gui.frmUpload.cmdUpload.FontName("Tahoma")
+Gui.frmUpload.cmdUpload.FontSize(7.8)
+Gui.frmUpload.cmdUpload.Event(Click,cmdUpload_Click1)
+Gui.frmUpload.cmdBrowse.Create(Button)
+Gui.frmUpload.cmdBrowse.Enabled(True)
+Gui.frmUpload.cmdBrowse.Visible(False)
+Gui.frmUpload.cmdBrowse.Zorder(0)
+Gui.frmUpload.cmdBrowse.Size(34,21)
+Gui.frmUpload.cmdBrowse.Position(347,4)
+Gui.frmUpload.cmdBrowse.Caption("^")
+Gui.frmUpload.cmdBrowse.FontName("Tahoma")
+Gui.frmUpload.cmdBrowse.FontSize(7.8)
+Gui.frmUpload.cmdBrowse.Event(Click,cmdBrowse_Click)
+Gui.frmUpload.dtpPostdt.Create(DatePicker)
+Gui.frmUpload.dtpPostdt.Enabled(True)
+Gui.frmUpload.dtpPostdt.Visible(True)
+Gui.frmUpload.dtpPostdt.Zorder(0)
+Gui.frmUpload.dtpPostdt.Size(125,22)
+Gui.frmUpload.dtpPostdt.Position(86,21)
+Gui.frmUpload.dtpPostdt.CheckBox(False)
+Gui.frmUpload.dtpPostdt.FontName("Tahoma")
+Gui.frmUpload.dtpPostdt.FontSize(7.8)
+Gui.frmUpload.txtVendor.Create(TextBox,"",False,125,22,0,289,32,True,0,"Tahoma",7.8,,1)
+Gui.frmUpload.txtVendor.Locked(True)
+Gui.frmUpload.lbl3.Create(Label,"File :",True,29,16,0,18,64,True,0,"Tahoma",7.8,,0,0)
+Gui.frmUpload.lbl3.BorderStyle(0)
+Gui.frmUpload.txtfile.Create(TextBox,"",True,284,22,0,85,62,True,0,"Tahoma",7.8,,1)
+Gui.frmUpload.txtfile.Locked(True)
+Gui.frmUpload.cmduploadfile.Create(Button)
+Gui.frmUpload.cmduploadfile.Enabled(True)
+Gui.frmUpload.cmduploadfile.Visible(True)
+Gui.frmUpload.cmduploadfile.Zorder(0)
+Gui.frmUpload.cmduploadfile.Size(34,21)
+Gui.frmUpload.cmduploadfile.Position(373,63)
+Gui.frmUpload.cmduploadfile.Caption("^")
+Gui.frmUpload.cmduploadfile.FontName("Tahoma")
+Gui.frmUpload.cmduploadfile.FontSize(7.8)
+Gui.frmUpload.cmduploadfile.Event(Click,cmduploadfile_Click)
+Program.Sub.ScreenSU.End
+Program.Sub.Preflight.Start
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+Function.Intrinsic.UI.UsePixels ' Allows you to use Pixels instead of Twips throughout
+
+v.Local.stargetcompcode.Declare
+
+'Function.Intrinsic.Debug.InvokeDebugger
+'Function.Intrinsic.Debug.Stop
+'	f.Intrinsic.Control.If(v.Caller.CompanyCode.Left1,=,"T")
+'	'for TST
+'		f.Intrinsic.String.Build("T{0}","01",v.Local.stargetcompcode)
+'		v.Local.stargetcompcode.Set("PLA")
+'	f.Intrinsic.Control.else
+'		f.Intrinsic.String.Build("M{0}","01",v.Local.stargetcompcode)
+'		v.Local.stargetcompcode.Set("TST")
+'	'for Live
+'	f.Intrinsic.Control.EndIf
+'	
+'	f.Global.General.overridecompany(v.Local.stargetcompcode)
+'	f.Intrinsic.UI.Msgbox(v.Caller.CompanyCode)		
+'	
+'	f.Global.General.overridecompany("TST")
+'	f.Intrinsic.UI.Msgbox(v.Caller.CompanyCode)	
+	
+	f.Intrinsic.Control.If(v.Caller.Switches,=,"A")
+		f.Intrinsic.Control.CallSub(UpdateADPREC)
+	f.Intrinsic.Control.Else
+		gui.frmUpload..Show
+	f.Intrinsic.Control.endif
+Program.Sub.Main.End
+
+Program.Sub.cmdUpload_Click.Start
+
+F.Intrinsic.Control.Try
+	V.Local.sFilePath.Declare(String)
+	V.Local.sFileContents.Declare(String)
+	V.Local.sRet.Declare(String)
+	V.Local.iCount.Declare(Long)
+	V.Local.sSQL.Declare
+	V.Local.sBranchcode.Declare
+	V.Local.sFieldNames.Declare
+	V.Local.sTypes.Declare
+	
+		
+	f.Intrinsic.Control.If(v.Screen.frmUpload!txtVendor.Text,=,"")
+		f.Intrinsic.UI.Msgbox("Vendor not valid")
+		gui.frmUpload.txtVendor.SetFocus 
+		F.Intrinsic.Control.ExitSub
+	Function.Intrinsic.Control.EndIf
+
+'f.Intrinsic.Control.BlockEvents 
+
+	f.Intrinsic.Control.If(v.Screen.frmUpload!txtfile.Text,=,"")
+		f.Intrinsic.UI.Msgbox("No File Was Selected")
+		F.Intrinsic.Control.ExitSub
+	Function.Intrinsic.Control.EndIf
+
+'F.ODBC.Connection!con.OpenCompanyConnection(300)
+'	F.Intrinsic.String.Build("select RTRIM(BRANCH_ID) from V_ACCTG_BRANCH where CO_CODE = '{0}'", V.Caller.CompanyCode, V.Local.sSQL)
+'	F.ODBC.connection!con.ExecuteAndReturn(V.Local.sSQL,V.Local.sRet)
+'	F.Intrinsic.Control.If(V.Local.sRet,<>,"")
+'		F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sRet)
+'		V.Local.sBranchcode.Set(V.Local.sRet(0))
+'	F.Intrinsic.Control.EndIf
+'	F.ODBC.Connection!con.close
+		
+'	V.Local.sFieldNames.Set("GLACCOUNT*!*Invoice*!*VENDORTOPAY*!*MERCHANT*!*AMOUNT*!*NAME*!*WorkOrder*!*WorkSuff*!*WorkSeq*!*InvoiceNotes")
+'	V.Local.sTypes.Set("String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String")
+
+'	V.Local.sFieldNames.Set("GLACCOUNT*!*Invoice*!*VENDORTOPAY*!*MERCHANT*!*AMOUNT*!*NAME*!*WorkOrder*!*WorkSuff*!*WorkSeq*!*InvoiceNotes")
+'	V.Local.sTypes.Set("String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String")
+	
+	'Company	Employee ID	Report Name		Batch Date	Account String	Journal Amount	Workorder	Suffix	Sequence	CER	Report Total Approved Amount
+	V.Local.sFieldNames.Set("Branch*!*Vendor*!*Invoice*!*InvoiceDate*!*GLAccount*!*Amount*!*WorkOrder*!*WorkSuff*!*WorkSeq*!*Voucher")
+	V.Local.sTypes.Set("String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String")
+
+
+	V.Local.sFilePath.Set(v.Screen.frmUpload!txtfile.Text)
+	Function.Data.DataTable.CreateFromCSV("AP043UP1",V.Local.sFilePath,V.Local.sFieldNames,V.Local.sTypes,true) 
+	
+'	f.Data.DataTable.AddRow("AP043UP1","PostDate",v.Local.sPostDate,"Vendor",v.Local.sVendCode,"Invoice",v.Local.sInvoiceNumb,"InvoiceDate",v.Local.sInvcDate,"Amount",v.Local.fAmount,"GLAccount",
+'	v.Local.sGLAccount,"TaxableFlag",v.Local.sTaxable,"TaxCode",v.Local.sTaxCode,"InvoiceNotes",v.Local.sNotes,"BookSelfAccessTax",v.Local.sBookTax,"WorkOrder",v.Local.sJob,"WorkSuff",v.Local.sSuffix,"WorkSeq",
+'	v.Local.sSEQ,"Branch",v.Local.sBranch,"PurchaseOrder",v.local.sPOHead,"Buyer",v.Local.sBuyer,"Voucher",v.Local.sVoucher)			
+
+'	PostDate  add
+'	Vendor add
+'	Invoice
+'	InvoiceDate add
+'	Amount
+'	GLAccount
+'	TaxableFlag  add
+'	TaxCode  add
+'	InvoiceNotes
+'	BookSelfAccessTax  add
+'	WorkOrder
+'	WorkSuff
+'	WorkSeq
+'	Branch add
+'	PurchaseOrder add
+'	Buyer add
+'	Voucher add
+	
+
+	
+	
+'	F.Intrinsic.String.Build("{0}\APBATCH_UPLOADbb.TXT",V.Caller.FilesDir,V.Local.sFilePath)
+	
+	'Create dataview, create string from it, close dataview, write string to file, then finally call the callwrapper accoring to how the programmer called
+	F.Intrinsic.Control.If(V.DataTable.AP043UP1.RowCount,>,0)
+	
+		f.Data.Datatable.AddColumn("AP043UP1","PostDate","String")
+		f.Data.Datatable.AddColumn("AP043UP1","TaxableFlag","String")
+		f.Data.Datatable.AddColumn("AP043UP1","TaxCode","String")
+		f.Data.Datatable.AddColumn("AP043UP1","BookSelfAccessTax","String")
+		f.Data.Datatable.AddColumn("AP043UP1","PurchaseOrder","String")
+		f.Data.Datatable.AddColumn("AP043UP1","Buyer","String")
+		f.Data.Datatable.AddColumn("AP043UP1","VatTaxRule","String")
+		f.Data.Datatable.AddColumn("AP043UP1","InvoiceDueDate","String")
+	
+		f.Data.Datatable.DeleteRow("AP043UP1",0)
+		'Format data in each row as needed by the upload program
+		
+		f.Data.DataTable.SetValueFormat("AP043UP1",-1,"InvoiceDate","InvoiceDate","MMDDYYYY")
+		
+		F.Intrinsic.Control.For(V.Local.iCount,0,V.DataTable.AP043UP1.RowCount--,1)
+		
+			'*021922
+			F.Intrinsic.String.Format(v.Screen.frmUpload!dtpPostdt.Value,"MMDDYY",v.local.sRet)
+			F.Data.DataTable.SetValue("AP043UP1",V.Local.iCount,"PostDate",V.Local.sRet)
+			
+			f.Data.DataTable.SetValueFormat("AP043UP1",-1,"Item_Promise_DT","NewDueDate","MM/DD/YYYY")
+			
+'			F.Intrinsic.String.RPad(V.DataTable.AP043UP1(V.Local.iCount).Vendor!FieldVal," ",6,V.Local.sRet)
+			F.Intrinsic.String.LPad(V.DataTable.AP043UP1(V.Local.iCount).Vendor!FieldVal,"0",6,V.Local.sRet)
+			F.Data.DataTable.SetValue("AP043UP1",V.Local.iCount,"Vendor",V.Local.sRet)
+			
+			F.Intrinsic.String.RPad(V.DataTable.AP043UP1(V.Local.iCount).Invoice!FieldVal," ",15,V.Local.sRet)
+			F.Data.DataTable.SetValue("AP043UP1",V.Local.iCount,"Invoice",V.Local.sRet)
+			
+			'*021922
+'			F.Intrinsic.String.Format(V.DataTable.AP043UP1(V.Local.iCount).InvoiceDate!FieldVal,"MMDDYY",v.local.sRet)
+'			F.Data.DataTable.SetValue("AP043UP1",V.Local.iCount,"InvoiceDate",V.Local.sRet)
+'			f.Data.DataTable.SetValueFormat("AP043UP1",-1,"InvoiceDate","InvoiceDate","MMDDYYYY")
+			
+			F.Intrinsic.String.Format(V.DataTable.AP043UP1(V.Local.iCount).Amount!FieldVal,"0.00",V.Local.sRet)
+			F.Data.DataTable.SetValue("AP043UP1",V.Local.iCount,"Amount",V.Local.sRet)
+			
+			F.Intrinsic.String.RPad(V.DataTable.AP043UP1(V.Local.iCount).GLAccount!FieldVal," ",15,V.Local.sRet)
+			F.Data.DataTable.SetValue("AP043UP1",V.Local.iCount,"GLAccount",V.Local.sRet)
+			
+			F.Intrinsic.String.RPad(V.DataTable.AP043UP1(V.Local.iCount).TaxableFlag!FieldVal," ",1,V.Local.sRet)
+			F.Data.DataTable.SetValue("AP043UP1",V.Local.iCount,"TaxableFlag",V.Local.sRet)
+			
+			F.Intrinsic.String.RPad(V.DataTable.AP043UP1(V.Local.iCount).TaxCode!FieldVal," ",5,V.Local.sRet)
+			F.Data.DataTable.SetValue("AP043UP1",V.Local.iCount,"TaxCode",V.Local.sRet)
+			
+			F.Intrinsic.String.RPad(V.DataTable.AP043UP1(V.Local.iCount).InvoiceNotes!FieldVal," ",30,V.Local.sRet)
+			F.Data.DataTable.SetValue("AP043UP1",V.Local.iCount,"InvoiceNotes",V.Local.sRet)
+			
+			F.Intrinsic.String.RPad(V.DataTable.AP043UP1(V.Local.iCount).BookSelfAccessTax!FieldVal," ",1,V.Local.sRet)
+			F.Data.DataTable.SetValue("AP043UP1",V.Local.iCount,"BookSelfAccessTax",V.Local.sRet)
+			
+			F.Intrinsic.String.RPad(V.DataTable.AP043UP1(V.Local.iCount).WorkOrder!FieldVal," ",6,V.Local.sRet)
+			F.Data.DataTable.SetValue("AP043UP1",V.Local.iCount,"WorkOrder",V.Local.sRet)
+			
+'			F.Intrinsic.String.RPad(V.DataTable.AP043UP1(V.Local.iCount).WorkSuff!FieldVal," ",3,V.Local.sRet)
+			F.Intrinsic.String.LPad(V.DataTable.AP043UP1(V.Local.iCount).WorkSuff!FieldVal,"0",3,V.Local.sRet)
+			F.Data.DataTable.SetValue("AP043UP1",V.Local.iCount,"WorkSuff",V.Local.sRet)
+			
+'			F.Intrinsic.String.RPad(V.DataTable.AP043UP1(V.Local.iCount).WorkSeq!FieldVal," ",6,V.Local.sRet)
+			F.Intrinsic.String.LPad(V.DataTable.AP043UP1(V.Local.iCount).WorkSeq!FieldVal,"0",6,V.Local.sRet)
+			F.Data.DataTable.SetValue("AP043UP1",V.Local.iCount,"WorkSeq",V.Local.sRet)
+			
+'			F.Intrinsic.String.RPad(V.Local.sBranchcode," ",2,V.Local.sRet)
+			F.Intrinsic.String.RPad(V.DataTable.AP043UP1(V.Local.iCount).Branch!FieldVal," ",2,V.Local.sRet)
+			F.Data.DataTable.SetValue("AP043UP1",V.Local.iCount,"Branch",V.Local.sRet)
+			
+			F.Intrinsic.String.Format(v.Screen.frmUpload!dtpPostdt.Value,"MMDDYY",v.local.sRet)
+			F.Data.DataTable.SetValue("AP043UP1",V.Local.iCount,"InvoiceDueDate",V.Local.sRet)
+			
+			F.Intrinsic.String.LPad(V.DataTable.AP043UP1(V.Local.iCount).PurchaseOrder!FieldVal," ",7,V.Local.sRet)
+			F.Data.DataTable.SetValue("AP043UP1",V.Local.iCount,"PurchaseOrder",V.Local.sRet)
+			
+			F.Intrinsic.String.RPad(V.DataTable.AP043UP1(V.Local.iCount).Buyer!FieldVal," ",3,V.Local.sRet)
+			F.Data.DataTable.SetValue("AP043UP1",V.Local.iCount,"Buyer",V.Local.sRet)
+			
+			F.Intrinsic.String.RPad(V.DataTable.AP043UP1(V.Local.iCount).Voucher!FieldVal," ",7,V.Local.sRet)
+			F.Data.DataTable.SetValue("AP043UP1",V.Local.iCount,"Voucher",V.Local.sRet)
+			
+			F.Intrinsic.String.RPad(V.DataTable.AP043UP1(V.Local.iCount).VatTaxRule!FieldVal," ",2,V.Local.sRet)
+			F.Data.DataTable.SetValue("AP043UP1",V.Local.iCount,"VatTaxRule",V.Local.sRet)
+		F.Intrinsic.Control.Next(V.Local.iCount)
+	
+	
+		'F.Intrinsic.String.Concat(V.Local.sText,V.Global.BatchDate,"*!*",V.uGlobal.uUpload(v.Local.iCount)!Vendor,"*!*",V.uGlobal.uUpload(v.Local.iCount)!Invoice,"*!*",V.uGlobal.uUpload(v.Local.iCount)!InvoiceDate,V.Local.sText)
+	'F.Intrinsic.String.Concat(V.Local.sText,V.uGlobal.uUpload(v.Local.iCount)!InvoiceDDate,"*!*",V.uGlobal.uUpload(v.Local.iCount)!Vendor,"*!*",V.uGlobal.uUpload(v.Local.iCount)!Invoice,"*!*",V.uGlobal.uUpload(v.Local.iCount)!InvoiceDate,V.Local.sText)
+	'F.Intrinsic.String.Concat(V.Local.sText,"*!*",V.uGlobal.uUpload(v.Local.iCount)!InvoiceAmt,"*!*",V.uGlobal.uUpload(v.Local.iCount)!GL,"*!*",V.uGlobal.uUpload(v.Local.iCount)!WO,"*!*","*!*",V.Local.sText)
+'	F.Intrinsic.String.Concat(V.Local.sText,"*!*",V.uGlobal.uUpload(v.Local.iCount)!InvoiceAmt,"*!*",V.uGlobal.uUpload(v.Local.iCount)!GL,"*!*",V.uGlobal.uUpload(v.Local.iCount)!WO,"*!*",V.uGlobal.uUpload(v.Local.iCount)!Column31,"*!*","*!*",V.Local.sText)
+
+	
+		F.Data.DataView.Create("AP043UP1","AP043UP1View",22)
+		
+'		V.Local.sFieldNames.Set("PostDate*!*Vendor*!*Invoice*!*InvoiceDate*!*Amount*!*GLAccount*!*TaxableFlag*!*TaxCode*!*InvoiceNotes*!*BookSelfAccessTax*!*WorkOrder*!*WorkSuff*!*WorkSeq*!*Branch*!*PurchaseOrder*!*Buyer*!*Voucher")			
+	
+		V.Local.sFieldNames.Set("PostDate*!*Vendor*!*Invoice*!*InvoiceDate*!*Amount*!*GLAccount*!*TaxableFlag*!*TaxCode*!*InvoiceNotes*!*BookSelfAccessTax*!*WorkOrder*!*WorkSuff*!*WorkSeq*!*Branch*!*PurchaseOrder*!*Buyer*!*Voucher")			
+	
+		f.Data.DataView.ToDataTableDistinct("AP043UP1","AP043UP1View","dtinvcheck",V.Local.sFieldNames)
+	
+		
+		F.Data.DataView.Create("dtinvcheck","AP043UP1View",22)
+		F.Data.DataView.ToString("dtinvcheck","AP043UP1View","*!*",V.Ambient.NewLine,V.Local.sFileContents)
+
+		f.Intrinsic.Control.If(V.Local.sBranchcode.trim,=,"")
+			V.Local.sBranchcode.Set("NA")
+		f.Intrinsic.Control.EndIf
+		
+		F.Intrinsic.String.Build("{0}\APBATCH_UPLOAD{1}.TXT",V.Caller.FilesDir,V.Local.sBranchcode,V.Local.sFilePath)
+		F.Intrinsic.File.String2File(V.Local.sFilePath,V.Local.sFileContents)
+	
+		f.Global.General.CallWrappersync(50,"AP043MNU")
+
+		F.Global.General.CallWrapperSync("50","AP0081") 'POST BACTCH
+		
+		f.Data.Dataview.Close("dtinvcheck","AP043UP1View")
+		f.Data.Dataview.Close("AP043UP1","AP043UP1View")
+		f.Data.Datatable.Close("dtinvcheck")
+		f.Data.Datatable.Close("AP043UP1")
+
+	F.Intrinsic.Control.EndIf
+	
+	f.Intrinsic.Control.end
+	
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(CatchErrorAP043UP1,"Sub",V.Ambient.CurrentSubroutine,"ErrNo",V.Ambient.ErrorNumber,"ErrDesc",V.Ambient.ErrorDescription)
+F.Intrinsic.Control.EndTry
+
+Program.Sub.File_Upload.End
+
+Program.Sub.cmdBrowse_Click.Start
+F.Intrinsic.Control.Try
+V.Local.sRet.Declare(String)
+
+Function.Intrinsic.UI.Browser(300,"",Variable.Local.sRet)
+
+F.Intrinsic.Control.If(V.Local.sRet,"=","***CANCEL***")
+	F.Intrinsic.UI.Msgbox("No Record was selected")
+F.Intrinsic.Control.Else
+	F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sRet)
+	gui.frmUpload.txtVendor.text(V.Local.sRet(0))
+F.Intrinsic.Control.EndIf
+
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(CatchErrorAP043UP1,"Sub",V.Ambient.CurrentSubroutine,"ErrNo",V.Ambient.ErrorNumber,"ErrDesc",V.Ambient.ErrorDescription)
+F.Intrinsic.Control.EndTry
+
+
+Program.Sub.cmdBrowse_Click.End
+Program.Sub.CatchErrorAP043UP1.Start
+V.local.sUPLPURORError.Declare
+	F.Intrinsic.String.Build("{0}*!*{1}*!*{2}", V.Args.Sub, V.Args.ErrNo, V.Args.ErrDesc, V.local.sUPLPURORError)
+	f.Intrinsic.UI.Msgbox(V.local.sUPLPURORError)
+Program.Sub.CatchErrorAP043UP1.End
+
+Program.Sub.cmduploadfile_Click.Start
+F.Intrinsic.Control.Try
+V.Local.sFilePath.Declare
+
+F.Intrinsic.UI.ShowOpenFileDialog("","csv|*.csv",V.Local.sFilePath)
+F.Intrinsic.Control.If(V.Local.sFilePath,=,"***CANCEL***")
+	F.Intrinsic.UI.Msgbox("No File Was Selected")
+f.Intrinsic.Control.else
+	gui.frmUpload.txtfile.Text(V.Local.sFilePath)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(CatchErrorAP043UP1,"Sub",V.Ambient.CurrentSubroutine,"ErrNo",V.Ambient.ErrorNumber,"ErrDesc",V.Ambient.ErrorDescription)
+F.Intrinsic.Control.EndTry
+Program.Sub.cmduploadfile_Click.End
+
+Program.Sub.frmUpload_UnLoad.Start
+	f.Intrinsic.Control.end
+Program.Sub.frmUpload_UnLoad.End
+
+Program.Sub.cmdUpload_Click1.Start
+F.Intrinsic.Control.Try
+	V.Local.sFilePath.Declare(String)
+	V.Local.sFileContents.Declare(String)
+	V.Local.sRet.Declare(String)
+	V.Local.iCount.Declare(Long)
+	V.Local.sSQL.Declare
+	V.Local.sBranchcode.Declare
+	V.Local.sFieldNames.Declare
+	V.Local.sTypes.Declare
+	V.Local.sFilter.Declare
+	V.Local.i.Declare
+	v.Local.stargetcompcode.Declare
+	v.Local.scurrcompcode.Declare
+	v.Local.bret.Declare
+'		
+'	f.Intrinsic.Control.If(v.Screen.frmUpload!txtVendor.Text,=,"")
+'		f.Intrinsic.UI.Msgbox("Vendor not valid")
+'		gui.frmUpload.txtVendor.SetFocus 
+'		F.Intrinsic.Control.ExitSub
+'	Function.Intrinsic.Control.EndIf
+
+'f.Intrinsic.Control.BlockEvents 
+
+	f.Intrinsic.Control.If(v.Screen.frmUpload!txtfile.Text,=,"")
+		f.Intrinsic.UI.Msgbox("No File Was Selected")
+		F.Intrinsic.Control.ExitSub
+	Function.Intrinsic.Control.EndIf
+
+'F.ODBC.Connection!con.OpenCompanyConnection(300)
+'	F.Intrinsic.String.Build("select RTRIM(BRANCH_ID) from V_ACCTG_BRANCH where CO_CODE = '{0}'", V.Caller.CompanyCode, V.Local.sSQL)
+'	F.ODBC.connection!con.ExecuteAndReturn(V.Local.sSQL,V.Local.sRet)
+'	F.Intrinsic.Control.If(V.Local.sRet,<>,"")
+'		F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sRet)
+'		V.Local.sBranchcode.Set(V.Local.sRet(0))
+'	F.Intrinsic.Control.EndIf
+'	F.ODBC.Connection!con.close
+		
+'	V.Local.sFieldNames.Set("GLACCOUNT*!*Invoice*!*VENDORTOPAY*!*MERCHANT*!*AMOUNT*!*NAME*!*WorkOrder*!*WorkSuff*!*WorkSeq*!*InvoiceNotes")
+'	V.Local.sTypes.Set("String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String")
+
+'	V.Local.sFieldNames.Set("GLACCOUNT*!*Invoice*!*VENDORTOPAY*!*MERCHANT*!*AMOUNT*!*NAME*!*WorkOrder*!*WorkSuff*!*WorkSeq*!*InvoiceNotes")
+'	V.Local.sTypes.Set("String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String")
+	
+	'Company	Employee ID	Report Name		Batch Date	Account String	Journal Amount	Workorder	Suffix	Sequence	CER	Report Total Approved Amount
+	
+	f.Intrinsic.UI.InvokeWaitDialog("Concur Import in Progress","GSS")
+	
+	
+	V.Local.sFieldNames.Set("Branch*!*Vendor*!*Invoice*!*InvoiceDate*!*GLAccount*!*Amount*!*WorkOrder*!*WorkSuff*!*WorkSeq*!*Voucher")
+	V.Local.sTypes.Set("String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String")
+
+
+	V.Local.sFilePath.Set(v.Screen.frmUpload!txtfile.Text)
+	Function.Data.DataTable.CreateFromCSV("AP043UP1",V.Local.sFilePath,V.Local.sFieldNames,V.Local.sTypes,true) 
+	
+'	f.Data.DataTable.AddRow("AP043UP1","PostDate",v.Local.sPostDate,"Vendor",v.Local.sVendCode,"Invoice",v.Local.sInvoiceNumb,"InvoiceDate",v.Local.sInvcDate,"Amount",v.Local.fAmount,"GLAccount",
+'	v.Local.sGLAccount,"TaxableFlag",v.Local.sTaxable,"TaxCode",v.Local.sTaxCode,"InvoiceNotes",v.Local.sNotes,"BookSelfAccessTax",v.Local.sBookTax,"WorkOrder",v.Local.sJob,"WorkSuff",v.Local.sSuffix,"WorkSeq",
+'	v.Local.sSEQ,"Branch",v.Local.sBranch,"PurchaseOrder",v.local.sPOHead,"Buyer",v.Local.sBuyer,"Voucher",v.Local.sVoucher)			
+
+'	PostDate  add
+'	Vendor add
+'	Invoice
+'	InvoiceDate add
+'	Amount
+'	GLAccount
+'	TaxableFlag  add
+'	TaxCode  add
+'	InvoiceNotes
+'	BookSelfAccessTax  add
+'	WorkOrder
+'	WorkSuff
+'	WorkSeq
+'	Branch add
+'	PurchaseOrder add
+'	Buyer add
+'	Voucher add
+	
+
+	
+	
+'	F.Intrinsic.String.Build("{0}\APBATCH_UPLOADbb.TXT",V.Caller.FilesDir,V.Local.sFilePath)
+	
+	'Create dataview, create string from it, close dataview, write string to file, then finally call the callwrapper accoring to how the programmer called
+	F.Intrinsic.Control.If(V.DataTable.AP043UP1.RowCount,>,0)
+	
+		f.Intrinsic.Control.CallSub(ValidateACCT)
+		F.Data.DataView.Create("AP043UP1","APBranch",22)
+		
+		
+		
+		Function.Data.DataTable.SetValueFormat("AP043UP1",-1,"WorkSuff","WorkSuff","000")
+		
+'		f.Intrinsic.Control.CallSub(WO_Exist)
+'		f.data.DataView.SetFilter("AP043UP1","APBranch","")
+'		f.Intrinsic.Control.end
+
+	
+		f.Data.Datatable.AddColumn("AP043UP1","PostDate","String")
+		f.Data.Datatable.AddColumn("AP043UP1","TaxableFlag","String")
+		f.Data.Datatable.AddColumn("AP043UP1","TaxCode","String")
+		f.Data.Datatable.AddColumn("AP043UP1","BookSelfAccessTax","String")
+		f.Data.Datatable.AddColumn("AP043UP1","PurchaseOrder","String")
+		f.Data.Datatable.AddColumn("AP043UP1","Buyer","String")
+		f.Data.Datatable.AddColumn("AP043UP1","VatTaxRule","String")
+		f.Data.Datatable.AddColumn("AP043UP1","InvoiceDueDate","String")
+		f.Data.Datatable.AddColumn("AP043UP1","InvoiceNotes","String")
+		
+	
+		f.Data.Datatable.DeleteRow("AP043UP1",0)
+		'Format data in each row as needed by the upload program
+		
+'		f.Data.DataTable.SetValueFormat("AP043UP1",-1,"InvoiceDate","InvoiceDate","MMDDYYYY")
+		f.Data.DataTable.SetValueFormat("AP043UP1",-1,"InvoiceDate","InvoiceDate","MMDDYY")
+		
+		v.Local.scurrcompcode.set(v.Caller.CompanyCode.trim)
+		f.Data.DataView.ToDataTableDistinct("AP043UP1", "APBranch", "BranchDT", "Branch")
+		
+		F.Intrinsic.Control.For(V.Local.i,0,V.DataTable.BranchDT.RowCount--,1)
+			f.Intrinsic.String.Build("Branch='{0}'",V.DataTable.BranchDT(V.Local.i).Branch!FieldVal,V.Local.sFilter)
+			F.Data.DataView.SetFilter("AP043UP1","APBranch",V.Local.sFilter)
+			V.Local.sBranchcode.Set(V.DataTable.BranchDT(V.Local.i).Branch!FieldVal)
+			f.Intrinsic.String.LPad(V.Local.sBranchcode,"0",2,V.Local.sBranchcode)
+			
+			
+			F.Intrinsic.Control.For(V.Local.iCount,0,v.DataView.AP043UP1!APBranch.RowCount--,1)
+			
+				'*021922
+				F.Intrinsic.String.Format(v.Screen.frmUpload!dtpPostdt.Value,"MMDDYY",v.local.sRet)
+				F.Data.DataView.SetValue("AP043UP1","APBranch",V.Local.iCount,"PostDate",V.Local.sRet)
+				
+				
+				F.Intrinsic.String.LPad(V.DataView.AP043UP1!APBranch(v.Local.iCount).Vendor!Fieldval,"0",6,V.Local.sRet)
+				F.Data.DataView.SetValue("AP043UP1","APBranch",V.Local.iCount,"Vendor",V.Local.sRet)
+				
+				F.Intrinsic.String.RPad(V.DataView.AP043UP1!APBranch(v.Local.iCount).Invoice!Fieldval," ",15,V.Local.sRet)
+				F.Data.DataView.SetValue("AP043UP1","APBranch",V.Local.iCount,"Invoice",V.Local.sRet)
+				
+				'*021922
+	'			F.Intrinsic.String.Format(V.DataTable.AP043UP1(V.Local.iCount).InvoiceDate!FieldVal,"MMDDYY",v.local.sRet)
+	'			F.Data.DataTable.SetValue("AP043UP1",V.Local.iCount,"InvoiceDate",V.Local.sRet)
+	'			f.Data.DataTable.SetValueFormat("AP043UP1",-1,"InvoiceDate","InvoiceDate","MMDDYYYY")
+				
+				
+				F.Intrinsic.String.Format(V.DataView.AP043UP1!APBranch(v.Local.iCount).Amount!Fieldval,"0.00",V.Local.sRet)
+				F.Data.DataView.SetValue("AP043UP1","APBranch",V.Local.iCount,"Amount",V.Local.sRet)
+				
+				F.Intrinsic.String.RPad(V.DataView.AP043UP1!APBranch(v.Local.iCount).GLAccount!Fieldval," ",15,V.Local.sRet)
+				F.Data.DataView.SetValue("AP043UP1","APBranch",V.Local.iCount,"GLAccount",V.Local.sRet)
+				
+				F.Intrinsic.String.RPad(V.DataView.AP043UP1!APBranch(v.Local.iCount).TaxableFlag!Fieldval," ",1,V.Local.sRet)
+				F.Data.DataView.SetValue("AP043UP1","APBranch",V.Local.iCount,"TaxableFlag",V.Local.sRet)
+				
+				F.Intrinsic.String.RPad(V.DataView.AP043UP1!APBranch(v.Local.iCount).TaxCode!Fieldval," ",5,V.Local.sRet)
+				F.Data.DataView.SetValue("AP043UP1","APBranch",V.Local.iCount,"TaxCode",V.Local.sRet)
+				
+				F.Intrinsic.String.RPad(V.DataView.AP043UP1!APBranch(v.Local.iCount).BookSelfAccessTax!Fieldval," ",1,V.Local.sRet)
+				F.Data.DataView.SetValue("AP043UP1","APBranch",V.Local.iCount,"BookSelfAccessTax",V.Local.sRet)
+				
+				F.Intrinsic.String.RPad(V.DataView.AP043UP1!APBranch(v.Local.iCount).WorkOrder!Fieldval," ",6,V.Local.sRet)
+				F.Data.DataView.SetValue("AP043UP1","APBranch",V.Local.iCount,"WorkOrder",V.Local.sRet)
+				
+	'			F.Intrinsic.String.RPad(V.DataTable.AP043UP1(V.Local.iCount).WorkSuff!FieldVal," ",3,V.Local.sRet)
+				F.Intrinsic.String.LPad(V.DataView.AP043UP1!APBranch(v.Local.iCount).WorkSuff!Fieldval,"0",3,V.Local.sRet)
+				F.Data.DataView.SetValue("AP043UP1","APBranch",V.Local.iCount,"WorkSuff",V.Local.sRet)
+				
+	'			F.Intrinsic.String.RPad(V.DataTable.AP043UP1(V.Local.iCount).WorkSeq!FieldVal," ",6,V.Local.sRet)
+				F.Intrinsic.String.LPad(V.DataView.AP043UP1!APBranch(v.Local.iCount).WorkSeq!Fieldval,"0",6,V.Local.sRet)
+				F.Data.DataView.SetValue("AP043UP1","APBranch",V.Local.iCount,"WorkSeq",V.Local.sRet)
+				
+'				F.Intrinsic.String.RPad(V.Local.sBranchcode," ",2,V.Local.sRet)
+				F.Intrinsic.String.RPad(V.DataView.AP043UP1!APBranch(v.Local.iCount).Branch!Fieldval," ",2,V.Local.sRet)
+				F.Data.DataView.SetValue("AP043UP1","APBranch",V.Local.iCount,"Branch",V.Local.sRet)
+				
+				
+				F.Intrinsic.String.Format(v.Screen.frmUpload!dtpPostdt.Value,"MMDDYY",v.local.sRet)
+				F.Data.DataView.SetValue("AP043UP1","APBranch",V.Local.iCount,"InvoiceDueDate",V.Local.sRet)
+				
+				F.Intrinsic.String.LPad(V.DataView.AP043UP1!APBranch(v.Local.iCount).PurchaseOrder!Fieldval," ",7,V.Local.sRet)
+				F.Data.DataView.SetValue("AP043UP1","APBranch",V.Local.iCount,"PurchaseOrder",V.Local.sRet)
+				
+				F.Intrinsic.String.RPad(V.DataView.AP043UP1!APBranch(v.Local.iCount).Buyer!Fieldval," ",3,V.Local.sRet)
+				F.Data.DataView.SetValue("AP043UP1","APBranch",V.Local.iCount,"Buyer",V.Local.sRet)
+				
+				F.Intrinsic.String.RPad(V.DataView.AP043UP1!APBranch(v.Local.iCount).Voucher!Fieldval," ",7,V.Local.sRet)
+				F.Data.DataView.SetValue("AP043UP1","APBranch",V.Local.iCount,"Voucher",V.Local.sRet)
+				
+				F.Intrinsic.String.RPad(V.DataView.AP043UP1!APBranch(v.Local.iCount).VatTaxRule!Fieldval," ",2,V.Local.sRet)
+				F.Data.DataView.SetValue("AP043UP1","APBranch",V.Local.iCount,"VatTaxRule",V.Local.sRet)
+				
+				F.Intrinsic.String.RPad(V.DataView.AP043UP1!APBranch(v.Local.iCount).InvoiceNotes!Fieldval," ",30,V.Local.sRet)
+				F.Data.DataView.SetValue("AP043UP1","APBranch",V.Local.iCount,"InvoiceNotes",V.Local.sRet)
+			F.Intrinsic.Control.Next(V.Local.iCount)
+		
+		
+			'F.Intrinsic.String.Concat(V.Local.sText,V.Global.BatchDate,"*!*",V.uGlobal.uUpload(v.Local.iCount)!Vendor,"*!*",V.uGlobal.uUpload(v.Local.iCount)!Invoice,"*!*",V.uGlobal.uUpload(v.Local.iCount)!InvoiceDate,V.Local.sText)
+		'F.Intrinsic.String.Concat(V.Local.sText,V.uGlobal.uUpload(v.Local.iCount)!InvoiceDDate,"*!*",V.uGlobal.uUpload(v.Local.iCount)!Vendor,"*!*",V.uGlobal.uUpload(v.Local.iCount)!Invoice,"*!*",V.uGlobal.uUpload(v.Local.iCount)!InvoiceDate,V.Local.sText)
+		'F.Intrinsic.String.Concat(V.Local.sText,"*!*",V.uGlobal.uUpload(v.Local.iCount)!InvoiceAmt,"*!*",V.uGlobal.uUpload(v.Local.iCount)!GL,"*!*",V.uGlobal.uUpload(v.Local.iCount)!WO,"*!*","*!*",V.Local.sText)
+	'	F.Intrinsic.String.Concat(V.Local.sText,"*!*",V.uGlobal.uUpload(v.Local.iCount)!InvoiceAmt,"*!*",V.uGlobal.uUpload(v.Local.iCount)!GL,"*!*",V.uGlobal.uUpload(v.Local.iCount)!WO,"*!*",V.uGlobal.uUpload(v.Local.iCount)!Column31,"*!*","*!*",V.Local.sText)
+	
+		
+'			F.Data.DataView.Create("AP043UP1","AP043UP1View",22)
+'			
+'	'		V.Local.sFieldNames.Set("PostDate*!*Vendor*!*Invoice*!*InvoiceDate*!*Amount*!*GLAccount*!*TaxableFlag*!*TaxCode*!*InvoiceNotes*!*BookSelfAccessTax*!*WorkOrder*!*WorkSuff*!*WorkSeq*!*Branch*!*PurchaseOrder*!*Buyer*!*Voucher")			
+'		
+			V.Local.sFieldNames.Set("PostDate*!*Vendor*!*Invoice*!*InvoiceDate*!*Amount*!*GLAccount*!*TaxableFlag*!*TaxCode*!*InvoiceNotes*!*BookSelfAccessTax*!*WorkOrder*!*WorkSuff*!*WorkSeq*!*Branch*!*PurchaseOrder*!*Buyer*!*Voucher")			
+'		
+'			f.Data.DataView.ToDataTableDistinct("AP043UP1","APBranch","dtinvcheck",V.Local.sFieldNames)
+			f.Data.DataView.ToDataTable("AP043UP1","APBranch","dtinvcheck")
+'		
+			f.Intrinsic.Control.If(V.Local.sBranchcode.trim,=,"01")
+				f.Data.Datatable.SetValue("dtinvcheck",-1,"Branch","00")
+			f.Intrinsic.Control.EndIf
+			
+			F.Data.DataView.Create("dtinvcheck","APBranch",22)
+'			F.Data.DataView.ToString("dtinvcheck","APBranch","*!*",V.Ambient.NewLine,V.Local.sFileContents)
+			F.Data.DataView.ToString("dtinvcheck","APBranch",V.Local.sFieldNames,"*!*",V.Ambient.NewLine,V.Local.sFileContents)
+		
+'			f.Intrinsic.Control.If(V.Local.sBranchcode.trim,=,"")
+			f.Intrinsic.Control.If(V.Local.sBranchcode.trim,=,"00")
+				V.Local.sBranchcode.Set("NA")
+			f.Intrinsic.Control.Else
+				f.Intrinsic.Control.If(v.Caller.CompanyCode.Left1,=,"T")
+				'for TST
+					f.Intrinsic.String.Build("T{0}",V.Local.sBranchcode,v.Local.stargetcompcode)
+				f.Intrinsic.Control.else
+					f.Intrinsic.String.Build("D{0}",V.Local.sBranchcode,v.Local.stargetcompcode)
+				'for Live
+				f.Intrinsic.Control.EndIf
+				
+				f.Intrinsic.Control.If(V.Local.sBranchcode,=,"01")
+					V.Local.sBranchcode.Set("00")
+				f.Intrinsic.Control.EndIf
+				
+				f.Global.General.overridecompany(v.Local.stargetcompcode)
+			f.Intrinsic.Control.EndIf
+			
+			F.Intrinsic.String.Build("{0}\APBATCH_UPLOAD{1}.TXT",V.Caller.FilesDir,V.Local.sBranchcode,V.Local.sFilePath)
+		
+			f.Intrinsic.File.Exists(V.Local.sFilePath,v.Local.bret)
+			f.Intrinsic.Control.If(v.Local.bret)
+				f.Intrinsic.File.DeleteFile(V.Local.sFilePath)
+				F.Intrinsic.UI.Sleep(1)
+			f.Intrinsic.Control.endif
+			
+						
+			F.Intrinsic.File.String2File(V.Local.sFilePath,V.Local.sFileContents)
+		
+'			f.Intrinsic.UI.Msgbox(v.Caller.CompanyCode)		
+			f.Global.General.CallWrappersync(50,"AP043MNU")
+			
+			f.Data.Dataview.Close("dtinvcheck","APBranch")
+'			f.Data.Dataview.Close("AP043UP1","AP043UP1View")
+			f.Data.Datatable.Close("dtinvcheck")
+		F.Intrinsic.Control.Next(V.Local.i)
+		f.Data.Dataview.Close("AP043UP1","APBranch")
+		f.Data.Datatable.Close("BranchDT")
+		F.Intrinsic.UI.CloseWaitDialog
+		f.Global.General.overridecompany(v.Local.scurrcompcode)
+'		F.Global.General.CallWrapperSync("50","AP0081") 'POST BACTCH
+	F.Intrinsic.Control.EndIf
+
+	f.Global.General.overridecompany(v.Local.scurrcompcode)
+	f.Data.Datatable.Close("AP043UP1")
+	
+	F.Intrinsic.UI.CloseWaitDialog
+	f.Intrinsic.UI.Msgbox("Upload completed")		
+	f.Intrinsic.Control.end
+	
+F.Intrinsic.Control.Catch
+	F.Intrinsic.UI.CloseWaitDialog
+	F.Intrinsic.Control.CallSub(CatchErrorAP043UP1,"Sub",V.Ambient.CurrentSubroutine,"ErrNo",V.Ambient.ErrorNumber,"ErrDesc",V.Ambient.ErrorDescription)
+F.Intrinsic.Control.EndTry
+Program.Sub.cmdUpload_Click1.End
+
+Program.Sub.WO_Exist.Start
+F.Intrinsic.Control.Try
+
+V.Local.sRet.Declare
+V.Local.sSQL.Declare
+'WO Exist
+F.ODBC.Connection!con.OpenCompanyConnection(300)
+	f.Data.Datatable.AddColumn("AP043UP1","WOExist","String")
+	f.Data.Datatable.AddColumn("AP043UP1","c1","string","'")
+	f.Data.Datatable.AddExpressionColumn("AP043UP1","WOSUFFIXSEQ","String","c1 + [WorkOrder]+[WorkSuff]+[WorkSeq] + c1")
+	
+	f.data.DataView.SetFilter("AP043UP1","APBranch","WOSUFFIXSEQ <>''")
+	f.Intrinsic.Control.If(v.Dataview.AP043UP1!APBranch.RowCount,>,1)
+		F.Data.DataView.ToDataTableDistinct("AP043UP1","APBranch","DTTemp","WOSUFFIXSEQ")
+		f.Data.DataView.Create("DTTemp","DVTemp",22,"","")
+		
+		Function.Data.DataView.ToString("DTTemp","DVTemp","WOSUFFIXSEQ","*!*",",",V.Local.sRet)
+		Function.Intrinsic.String.SPLIT(V.Local.sRet,",",V.Local.sRet)
+		Function.Intrinsic.String.Join(V.Local.sRet,",",V.Local.sRet)
+	
+		'F.Intrinsic.String.Build("delete  from GLOBAL{0}.job_header where job + suffix in {1} ",V.global.utargetcompcode,V.global.sJobList,V.Local.sSql)
+	
+		f.Intrinsic.String.Build("select job+SUFFIX+SEQ,'Y' from v_Job_detail where JOB+SUFFIX+SEQ IN ({0})",V.Local.sRet,V.Local.sSQL)
+		F.Data.Dictionary.CreateFromSQL("dict", "con",V.Local.sSQL)
+		F.Data.Dictionary.SetDefaultReturn("dict", "N")
+		F.Data.DataTable.FillFromDictionary("AP043UP1", "dict", "WOSUFFIXSEQ", "WOExist")
+		F.Data.Dictionary.Close("dict")
+		
+		F.Data.DataView.SetFilter("AP043UP1","APBranch","WOExist='N'")
+		F.Intrinsic.Control.If(v.DataView.AP043UP1!APBranch.RowCount,>,0)
+			f.Intrinsic.Variable.AddRV("WOExist","N")
+			V.Local.sFieldNames.Set("WorkOrder*!*WorkSuff*!*WorkSeq")			
+			F.Data.DataView.ToString("AP043UP1","APBranch","*!*",V.Ambient.NewLine,V.Local.sFileContents)
+		f.Intrinsic.Control.Else
+			f.Intrinsic.Variable.AddRV("WOExist","Y")
+		F.Intrinsic.Control.EndIf
+	F.Intrinsic.Control.EndIf
+
+	F.ODBC.Connection!con.close
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(CatchErrorAP043UP1,"Sub",V.Ambient.CurrentSubroutine,"ErrNo",V.Ambient.ErrorNumber,"ErrDesc",V.Ambient.ErrorDescription)
+F.Intrinsic.Control.EndTry
+Program.Sub.WO_Exist.End
+
+Program.Sub.ValidateACCT.Start
+F.Intrinsic.Control.Try
+
+v.Local.ssql.Declare
+V.Local.sFileExport.Declare
+V.Local.sRet.Declare
+V.Local.sFileContents.Declare
+V.Local.sRet1.Declare
+V.Local.sRet2.Declare
+V.Local.sRet3.Declare
+
+'Function.Intrinsic.Debug.InvokeDebugger
+
+F.Intrinsic.UI.ChangeWaitStatus("Data Validation in Progress...Please Wait...")
+
+f.Data.DataTable.AddColumn("AP043UP1","ACCTEXIST","string")
+f.Data.DataTable.AddColumn("AP043UP1","INVDUP","string")
+f.Data.DataTable.AddColumn("AP043UP1","WOEXIT","string")
+f.Data.DataTable.AddColumn("AP043UP1","VENDEXIT","string")
+f.Data.DataTable.AddColumn("AP043UP1","C1","string","D")
+f.Data.DataTable.SetValueFormat("AP043UP1",-1,"Branch","Branch","00")
+f.Data.DataTable.SetValueFormat("AP043UP1",-1,"WorkOrder","WorkOrder","000000")
+f.Data.DataTable.SetValueFormat("AP043UP1",-1,"WorkSuff","WorkSuff","000")
+f.Data.DataTable.SetValueFormat("AP043UP1",-1,"WorkSeq","WorkSeq","000000")
+f.Data.DataTable.SetValueFormat("AP043UP1",-1,"Vendor","Vendor","000000")
+
+f.Data.DataTable.AddExpressionColumn("AP043UP1","BranchFMT","string","[C1] + [Branch]")
+f.Data.DataTable.AddExpressionColumn("AP043UP1","ACCTFMT","string","[GLAccount] + [BranchFMT]")
+f.Data.DataTable.AddExpressionColumn("AP043UP1","VENINV","string","[Vendor] + [Invoice] + [BranchFMT]")
+f.Data.DataTable.AddExpressionColumn("AP043UP1","WOSUFFIXSEQ","string","[WorkOrder] + [WorkSuff] + [WorkSeq] + [BranchFMT]")
+f.Data.DataTable.AddExpressionColumn("AP043UP1","VEND","string","[Vendor] + [BranchFMT]")
+
+
+'v.Local.ssql.Set("select GL_Account + 'D01','Y' from GL_MASTER")
+
+v.Local.ssql.Set("select rtrim(GL_Account) + 'D01','Y' from GLOBALD01.GL_MASTER")
+f.Intrinsic.String.Build("{0} Union select rtrim(GL_Account) + 'D02','Y' from GLOBALD02.GL_MASTER ",v.Local.ssql,v.Local.ssql)
+f.Intrinsic.String.Build("{0} Union select  rtrim(GL_Account) + 'D03','Y' from GLOBALD03.GL_MASTER ",v.Local.ssql,v.Local.ssql)
+f.Intrinsic.String.Build("{0} Union select  rtrim(GL_Account) + 'D04','Y' from GLOBALD04.GL_MASTER ",v.Local.ssql,v.Local.ssql)
+f.Intrinsic.String.Build("{0} Union select  rtrim(GL_Account) + 'D05','Y' from GLOBALD05.GL_MASTER ",v.Local.ssql,v.Local.ssql)
+
+
+F.ODBC.Connection!con.OpenCompanyConnection(300)
+F.Data.Dictionary.CreateFromSQL("dtXdic","con",v.Local.ssql)
+f.Data.Dictionary.SetDefaultReturn("dtXdic","N")
+f.Data.DataTable.FillFromDictionary("AP043UP1","dtXdic","ACCTFMT","ACCTEXIST")
+f.Data.Dictionary.Close("dtXdic")
+
+
+'v.Local.ssql.Set("select distinct rtrim(vendor) + rtrim(Invoice) + 'D01', 'Y' from AP_OPEN_ITEMS")
+v.Local.ssql.Set("select distinct rtrim(vendor) + rtrim(Invoice) + 'D01', 'Y' from GLOBALD01.AP_OPEN_ITEMS")
+f.Intrinsic.String.Build("{0} Union select distinct rtrim(vendor) + rtrim(Invoice) + 'D02', 'Y' from GLOBALD02.AP_OPEN_ITEMS ",v.Local.ssql,v.Local.ssql)
+f.Intrinsic.String.Build("{0} Union select distinct rtrim(vendor) + rtrim(Invoice) + 'D03', 'Y' from GLOBALD03.AP_OPEN_ITEMS ",v.Local.ssql,v.Local.ssql)
+f.Intrinsic.String.Build("{0} Union select distinct rtrim(vendor) + rtrim(Invoice) + 'D04', 'Y' from GLOBALD04.AP_OPEN_ITEMS ",v.Local.ssql,v.Local.ssql)
+f.Intrinsic.String.Build("{0} Union select distinct rtrim(vendor) + rtrim(Invoice) + 'D05', 'Y' from GLOBALD05.AP_OPEN_ITEMS ",v.Local.ssql,v.Local.ssql)
+
+
+F.Data.Dictionary.CreateFromSQL("dtXdic","con",v.Local.ssql)
+f.Data.Dictionary.SetDefaultReturn("dtXdic","N")
+f.Data.DataTable.FillFromDictionary("AP043UP1","dtXdic","VENINV","INVDUP")
+f.Data.Dictionary.Close("dtXdic")
+
+
+''v.Local.ssql.Set("select distinct rtrim(job) + rtrim(suffix) + rtrim(seq) + 'D01', 'Y' from job_detail")
+'v.Local.ssql.Set("select distinct rtrim(job) + rtrim(suffix) + rtrim(seq) + 'D01', 'Y' from GLOBALD01.job_detail")
+'f.Intrinsic.String.Build("{0} Union select distinct rtrim(job) + rtrim(suffix) + rtrim(seq) + 'D02', 'Y' from GLOBALD02.job_detail ",v.Local.ssql,v.Local.ssql)
+'f.Intrinsic.String.Build("{0} Union select distinct rtrim(job) + rtrim(suffix) + rtrim(seq) + 'D03', 'Y' from GLOBALD03.job_detail ",v.Local.ssql,v.Local.ssql)
+'f.Intrinsic.String.Build("{0} Union select distinct rtrim(job) + rtrim(suffix) + rtrim(seq) + 'D04', 'Y' from GLOBALD04.job_detail ",v.Local.ssql,v.Local.ssql)
+'f.Intrinsic.String.Build("{0} Union select distinct rtrim(job) + rtrim(suffix) + rtrim(seq) + 'D05', 'Y' from GLOBALD05.job_detail ",v.Local.ssql,v.Local.ssql)
+
+v.Local.ssql.Set("select distinct rtrim(job) + rtrim(suffix) + rtrim(seq) + 'D01', 'Y' from GLOBALD01.job_operations")
+f.Intrinsic.String.Build("{0} Union select distinct rtrim(job) + rtrim(suffix) + rtrim(seq) + 'D02', 'Y' from GLOBALD02.job_operations ",v.Local.ssql,v.Local.ssql)
+f.Intrinsic.String.Build("{0} Union select distinct rtrim(job) + rtrim(suffix) + rtrim(seq) + 'D03', 'Y' from GLOBALD03.job_operations ",v.Local.ssql,v.Local.ssql)
+f.Intrinsic.String.Build("{0} Union select distinct rtrim(job) + rtrim(suffix) + rtrim(seq) + 'D04', 'Y' from GLOBALD04.job_operations ",v.Local.ssql,v.Local.ssql)
+f.Intrinsic.String.Build("{0} Union select distinct rtrim(job) + rtrim(suffix) + rtrim(seq) + 'D05', 'Y' from GLOBALD05.job_operations ",v.Local.ssql,v.Local.ssql)
+
+Function.Intrinsic.Debug.Stop
+
+F.Data.Dictionary.CreateFromSQL("dtXdic","con",v.Local.ssql)
+f.Data.Dictionary.SetDefaultReturn("dtXdic","N")
+f.Data.DataTable.FillFromDictionary("AP043UP1","dtXdic","WOSUFFIXSEQ","WOEXIT")
+f.Data.Dictionary.Close("dtXdic")
+
+v.Local.ssql.Set("select distinct rtrim(vendor) + 'D01', 'Y' from GLOBALD01.Vendor_Master")
+f.Intrinsic.String.Build("{0} Union select distinct rtrim(vendor) + 'D02', 'Y' from GLOBALD02.Vendor_Master ",v.Local.ssql,v.Local.ssql)
+f.Intrinsic.String.Build("{0} Union select distinct rtrim(vendor) + 'D03', 'Y' from GLOBALD03.Vendor_Master ",v.Local.ssql,v.Local.ssql)
+f.Intrinsic.String.Build("{0} Union select distinct rtrim(vendor) + 'D04', 'Y' from GLOBALD04.Vendor_Master ",v.Local.ssql,v.Local.ssql)
+f.Intrinsic.String.Build("{0} Union select distinct rtrim(vendor) + 'D05', 'Y' from GLOBALD05.Vendor_Master ",v.Local.ssql,v.Local.ssql)
+
+Function.Intrinsic.Debug.Stop
+
+F.Data.Dictionary.CreateFromSQL("dtXdic","con",v.Local.ssql)
+f.Data.Dictionary.SetDefaultReturn("dtXdic","N")
+f.Data.DataTable.FillFromDictionary("AP043UP1","dtXdic","VEND","VENDEXIT")
+f.Data.Dictionary.Close("dtXdic")
+
+F.Data.DataView.Create("AP043UP1","APValidate",22,"","")
+F.Data.DataView.SetFilter("AP043UP1","APValidate","ACCTEXIST='N' and trim(Branch) <> 'Company'")
+f.Intrinsic.Control.If(v.DataView.AP043UP1!APValidate.RowCount,>,0)
+	Function.Data.DataView.ToString("AP043UP1","APValidate","BranchFMT*!*GLAccount"," ",V.Ambient.NewLine,V.Local.sRet)	
+	f.Intrinsic.String.Build("Invalid Accounts {0}============= {0}{1}",v.Ambient.NewLine,V.Local.sRet,V.Local.sRet)
+f.Intrinsic.Control.EndIf
+
+F.Data.DataView.SetFilter("AP043UP1","APValidate","INVDUP='Y' and trim(Branch) <> 'Company'")
+f.Intrinsic.Control.If(v.DataView.AP043UP1!APValidate.RowCount,>,0)
+	f.Data.Dataview.ToDataTableDistinct("AP043UP1","APValidate","DTDUPINV","BranchFMT*!*Vendor*!*Invoice")
+	F.Data.DataView.Create("DTDUPINV","DVDUPINV")
+	Function.Data.DataView.ToString("DTDUPINV","DVDUPINV","BranchFMT*!*Vendor*!*Invoice"," ",V.Ambient.NewLine,V.Local.sRet1)	
+	f.Intrinsic.String.Build("{0}Duplicate Invoice {0}============= {0}{1}",v.Ambient.NewLine,V.Local.sRet1,V.Local.sRet1)
+	F.Data.DataView.close("DTDUPINV","DVDUPINV")
+	f.Data.DataTable.Close("DTDUPINV")
+f.Intrinsic.Control.EndIf
+
+F.Data.DataView.SetFilter("AP043UP1","APValidate","WOEXIT='N' and trim(Branch) <> 'Company' and WOSUFFIXSEQ <> ''")
+f.Intrinsic.Control.If(v.DataView.AP043UP1!APValidate.RowCount,>,0)
+	f.Data.Dataview.ToDataTableDistinct("AP043UP1","APValidate","DTDUPINV","BranchFMT*!*WorkOrder*!*WorkSuff*!*WorkSeq")
+	F.Data.DataView.Create("DTDUPINV","DVDUPINV")
+	Function.Data.DataView.ToString("DTDUPINV","DVDUPINV","BranchFMT*!*WorkOrder*!*WorkSuff*!*WorkSeq"," ",V.Ambient.NewLine,V.Local.sRet2)	
+	f.Intrinsic.String.Build("{0}Invalid WorkOrder {0}============= {0}{1}",v.Ambient.NewLine,V.Local.sRet2,V.Local.sRet2)
+	F.Data.DataView.close("DTDUPINV","DVDUPINV")
+	f.Data.DataTable.Close("DTDUPINV")
+f.Intrinsic.Control.EndIf
+
+F.Data.DataView.SetFilter("AP043UP1","APValidate","VENDEXIT='N' and trim(Branch) <> 'Company' ")
+f.Intrinsic.Control.If(v.DataView.AP043UP1!APValidate.RowCount,>,0)
+	f.Data.Dataview.ToDataTableDistinct("AP043UP1","APValidate","DTDUPINV","BranchFMT*!*Vendor")
+	F.Data.DataView.Create("DTDUPINV","DVDUPINV")
+	Function.Data.DataView.ToString("DTDUPINV","DVDUPINV","BranchFMT*!*Vendor"," ",V.Ambient.NewLine,V.Local.sRet3)	
+	f.Intrinsic.String.Build("{0}Invalid Vendor Account {0}============= {0}{1}",v.Ambient.NewLine,V.Local.sRet3,V.Local.sRet3)
+	F.Data.DataView.close("DTDUPINV","DVDUPINV")
+	f.Data.DataTable.Close("DTDUPINV")
+f.Intrinsic.Control.EndIf
+
+f.Intrinsic.Control.If(V.Local.sRet.Trim,<>,"","or",V.Local.sRet1.Trim,<>,"",V.Local.sRet2.Trim,<>,"",V.Local.sRet3.Trim,<>,"")
+	f.Intrinsic.String.Build("{0}{1}{2}{1}{3}{1}{4}",V.Local.sRet,v.Ambient.NewLine,V.Local.sRet1,V.Local.sRet2,V.Local.sRet3,V.Local.sRet)
+f.Intrinsic.Control.EndIf
+
+f.Intrinsic.Control.If(V.Local.sRet.Trim,<>,"")
+	F.Intrinsic.String.Build("{0}\GCG_6647_ACCTValidate.txt",V.Caller.LocalGssTempDir,V.Local.sFileExport)
+	F.Intrinsic.File.String2File(V.local.sFileExport,V.Local.sRet)
+	F.Intrinsic.Task.ShellExec(0,"",V.Local.sFileExport,"","",1)
+	
+	F.Data.DataView.close("AP043UP1","APValidate")
+	F.ODBC.Connection!con.close
+	f.Intrinsic.Control.End
+f.Intrinsic.Control.EndIf
+
+
+F.Intrinsic.UI.ChangeWaitStatus("Concur Import in Progress")
+
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.UI.CloseWaitDialog
+	f.Intrinsic.UI.Msgbox(V.Ambient.ErrorDescription)
+	f.Intrinsic.Control.End
+F.Intrinsic.Control.EndTry
+Program.Sub.ValidateACCT.End
+
+Program.Sub.UpdateADPREC.Start
+F.Intrinsic.Control.Try
+V.Local.sFieldName.Declare
+V.Local.sTypes.Declare
+V.Local.sFileName.Declare
+v.local.sCOCode.Declare
+v.Local.scurrcompcode.Declare
+V.Local.iCount.Declare
+v.Local.sfilter.Declare
+
+F.Intrinsic.UI.ShowOpenFileDialog("",".csv",V.Local.sFileName)
+F.Intrinsic.Control.If(V.Local.sFileName.Trim,=,"***CANCEL***")
+	F.Intrinsic.Control.ExitSub
+F.Intrinsic.Control.EndIf
+
+f.Intrinsic.UI.InvokeWaitDialog("ADP Import in Progress","GSS")
+f.Intrinsic.Control.If(v.DataTable.DTClmnWeek.Exists,=,True)
+	f.Data.DataTable.Close("DTClmnWeek")
+f.Intrinsic.Control.EndIf
+
+V.Local.sFieldName.Set("CompanyCode*!*FileNumber*!*LastName*!*FirstName*!*MiddleName*!*AddressLine1*!*AddressLine2*!*City*!*State*!*Zip*!*DepartmentCode*!*NAICS*!*Worker*!*PayCode*!*PayRateCode*!*Termination*!*TerminationDate*!*JobTitle*!*RegularPayRate*!*RegularPayEffective*!*Union*!*Hire*!*Rate3*!*Rate4*!*Rate5*!*Rate6")
+V.Local.sTypes.Set("String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String*!*String")
+
+Function.Data.DataTable.CreateFromCSV("DTClmnWeek",V.Local.sFileName,V.Local.sFieldName,V.Local.sTypes,true) 
+
+f.Data.DataTable.DeleteRow("DTClmnWeek",0)
+'PayrollCompanyCode*!*FileNumber*!*LastName*!*FirstName*!*MiddleName*!*AddressLine1*!*AddressLine2*!*City*!*State*!*Zip*!*Pay*!*PayRate*TerminationDate*
+
+
+f.Data.DataTable.SetValueFormat("DTClmnWeek",-1,"FileNumber","FileNumber","00000")
+f.Data.DataTable.AddExpressionColumn("DTClmnWeek","EMPNAME","STRING", "trim([FirstName]) + ' ' + ISNULL(trim([MiddleName]),'') + ' ' + trim([LastName])")
+f.Data.DataTable.AddExpressionColumn("DTClmnWeek","Address","STRING","trim(trim([AddressLine1]) + ' ' + ISNULL(trim([AddressLine2]),''))")
+
+f.Data.DataTable.AddExpressionColumn("DTClmnWeek","EMPNAME1","string","substring(EMPNAME,1,30)")
+f.Data.DataTable.AddExpressionColumn("DTClmnWeek","Address1","string","substring(Address,1,30)")
+f.Data.DataTable.AddExpressionColumn("DTClmnWeek","Zip1","string","substring(Zip,1,9)")
+f.Data.DataTable.AddExpressionColumn("DTClmnWeek","State1","string","substring(State,1,2)")
+f.Data.DataTable.AddExpressionColumn("DTClmnWeek","City1","string","substring(City,1,24)")
+
+
+f.Data.DataTable.SetValueFormat("DTClmnWeek",-1,"TerminationDate","TerminationDate","MMDDYY")
+f.Data.DataTable.SetValueFormat("DTClmnWeek",-1,"Hire","Hire","MMDDYY")
+f.Data.DataTable.SetValueFormat("DTClmnWeek",-1,"RegularPayEffective","RegularPayEffective","MMDDYY")
+
+'DATE_HIRE 2/3/20
+'DATE_RAISE 021223
+'rate RegularPayRate
+
+'RegularPayRate*!*RegularPayEffective
+'1 2 3 4 5 6 7
+'8 9 10 14 15 17 19 20
+
+'PayrollCompanyCode*!*FileNumber*!*LastName*!*FirstName*!*MiddleName*!*AddressLine1*!*AddressLine2*!*City*!*State*!*Zip
+'		
+'EMPLOYEE, NAME,ADDRESS,CITY,STATE,ZIP_CODE, DATE_TERMINATION, PAY_TYPE,   FREQUENCY
+'123120
+Function.Intrinsic.Debug.Stop
+
+'D00     EPIZQ6PD     COMPANY CODE ZQ6
+'D02     EPIZQ3PD     COMPANY CODE ZQ3
+'D03     EPIZQ1PD     COMPANY CODE ZQ1
+'D04     EPIZQ0PD     COMPANY CODE ZQ0
+'D05     EPIZPXPD     COMPANY CODE ZPX   
+
+'f.Intrinsic.Control.SelectCase(v.Caller.CompanyCode.Trim)
+'f.Intrinsic.Control.Case("ZQ6")
+'	v.local.sCOCode.set("D01")
+'f.Intrinsic.Control.Case("ZQ3")
+'	v.local.sCOCode.set("D02")
+'f.Intrinsic.Control.Case("ZQ1")
+'	v.local.sCOCode.set("D03")
+'f.Intrinsic.Control.Case("ZQ0")
+'	v.local.sCOCode.set("D04")
+'f.Intrinsic.Control.Case("ZPX")
+'	v.local.sCOCode.set("D05")
+'f.Intrinsic.Control.CaseElse
+'	f.Intrinsic.Control.GoTo("LBL1")
+'f.Intrinsic.Control.EndSelect
+
+F.Data.DataView.Create("DTClmnWeek","DVClmnWeek",22)
+
+f.Data.DataView.ToDataTableDistinct("DTClmnWeek", "DVClmnWeek", "ImportDT", "CompanyCode")
+
+F.Intrinsic.Control.For(V.Local.iCount,0,V.DataTable.ImportDT.RowCount--,1)
+
+	f.Intrinsic.String.Build("CompanyCode='{0}'",V.DataTable.ImportDT(v.Local.iCount).CompanyCode!Fieldval,v.Local.sfilter)
+	
+	
+	f.Data.DataView.SetFilter("DTClmnWeek","DVClmnWeek",v.Local.sfilter)
+	f.Data.DataView.ToDataTableDistinct("DTClmnWeek", "DVClmnWeek", "ImportDTSAVE","FileNumber*!*EMPNAME1*!*ADDRESS1*!*CITY1*!*STATE1*!*Zip1*!*TerminationDate*!*PayRateCode*!*PayCode*!*Hire*!*RegularPayEffective*!*RegularPayRate")
+	f.Intrinsic.Control.SelectCase(V.DataTable.ImportDT(v.Local.iCount).CompanyCode!Fieldval)
+'	f.Intrinsic.Control.Case("ZQ6")
+'		v.local.sCOCode.set("T01")
+'	f.Intrinsic.Control.Case("ZQ3")
+'		v.local.sCOCode.set("T02")
+'	f.Intrinsic.Control.Case("ZQ1")
+'		v.local.sCOCode.set("T03")
+'	f.Intrinsic.Control.Case("ZQ0")
+'		v.local.sCOCode.set("T04")
+'	f.Intrinsic.Control.Case("ZPX")
+'		v.local.sCOCode.set("T05")
+'	f.Intrinsic.Control.CaseElse
+'		f.Data.DataTable.Close("ImportDTSAVE")	
+'		f.Intrinsic.Control.GoTo("LBL1")
+'	f.Intrinsic.Control.EndSelect
+	
+	f.Intrinsic.Control.Case("ZQ6")
+		v.local.sCOCode.set("D01")
+	f.Intrinsic.Control.Case("ZQ3")
+		v.local.sCOCode.set("D02")
+	f.Intrinsic.Control.Case("ZQ1")
+		v.local.sCOCode.set("D03")
+	f.Intrinsic.Control.Case("ZQ0")
+		v.local.sCOCode.set("D04")
+	f.Intrinsic.Control.Case("ZPX")
+		v.local.sCOCode.set("D05")
+	f.Intrinsic.Control.CaseElse
+		f.Data.DataTable.Close("ImportDTSAVE")	
+		f.Intrinsic.Control.GoTo("LBL1")
+	f.Intrinsic.Control.EndSelect
+	
+	f.Intrinsic.String.Build("ADP Import in Progress {0}",v.local.sCOCode,v.Local.sfilter)
+	f.Intrinsic.UI.ChangeWaitStatus(v.Local.sfilter)
+	
+	'EMPLOYEE, NAME,ADDRESS,CITY,STATE,ZIP_CODE, DATE_TERMINATION, PAY_TYPE,   FREQUENCY
+'DATEHIRE*!*DATERAISE*!*RegularPayRate
+	f.Intrinsic.String.Build("GLOBAL_{0}",v.local.sCOCode,v.local.sCOCode)
+	f.ODBC.Connection!Conx.OpenConnection(v.local.sCOCode,v.Ambient.PUser,v.Ambient.PPass)
+	F.Data.DataTable.SaveToDB("ImportDTSAVE","conx","EMPLOYEE_MSTR","FileNumber",256,"FileNumber@!@EMPLOYEE*!*EMPNAME1@!@NAME*!*Address1@!@ADDRESS*!*TerminationDate@!@DATE_TERMINATION*!*City1@!@CITY*!*State1@!@STATE*!*Zip1@!@ZIP_CODE*!*PayRateCode@!@PAY_TYPE*!*PayCode@!@FREQUENCY*!*HIRE@!@DATE_HIRE*!*RegularPayEffective@!@DATE_RAISE*!*RegularPayRate@!@rate")
+	f.Data.DataTable.Close("ImportDTSAVE")	
+	F.ODBC.Connection!conx.Close
+	
+	f.Intrinsic.Control.Label("LBL1")
+F.Intrinsic.Control.Next(V.Local.iCount)	
+
+f.Data.DataTable.Close("DTClmnWeek")	
+
+F.Intrinsic.Control.Catch
+
+	F.Intrinsic.UI.CloseWaitDialog
+	Function.Intrinsic.Debug.Stop
+	f.Intrinsic.UI.Msgbox(V.Ambient.ErrorDescription)
+	f.Intrinsic.Control.End
+F.Intrinsic.Control.EndTry
+Program.Sub.UpdateADPREC.End
+
+Program.Sub.Comments.Start
+${$5$}$3.0.0.0$}$1
+${$6$}$rnair$}$20230323000547404$}$JUGEdtlNdgRUPvge2DQ26cQN3mFRxmKJRQlVcet3P4o9jFfQOP7oO0mZa/v6XZDBbHGuzGrb37I=
+Program.Sub.Comments.End
